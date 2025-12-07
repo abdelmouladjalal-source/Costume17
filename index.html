@@ -1,75 +1,178 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
 <title>COSTUME17 - الرئيسية</title>
 <style>
-body{font-family:Arial, sans-serif;direction:rtl;background:#f4f4f4;margin:0;padding:0;}
-.container{max-width:1200px;margin:auto;background:#fff;padding:20px;border-radius:8px;box-shadow: 0 0 10px rgba(0,0,0,0.1);}
-h2{text-align:center;margin-bottom:20px;color:#333;border-bottom: 2px solid #ccc;padding-bottom: 10px;}
-form{display:flex;flex-wrap:wrap;gap:15px;align-items:center;justify-content:flex-start; margin-bottom: 25px;padding: 15px; border: 1px solid #eee; border-radius: 6px;}
+/* ==================================
+   الخلفية والأبعاد الأساسية
+   ================================== */
+body{
+    font-family: 'Tahoma', Arial, sans-serif; /* خط مريح للعين */
+    direction:rtl;
+    background:#eef1f5; /* خلفية هادئة جداً */
+    margin:0;
+    padding:30px 0;
+}
+.container{
+    max-width:1200px;
+    margin:auto;
+    background:#ffffff; /* الواجهة بيضاء وواضحة */
+    padding:30px;
+    border-radius:15px; /* حواف مستديرة للمظهر الودّي */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); /* ظل خفيف لإبراز الواجهة */
+}
+h2{
+    text-align:center;
+    margin-bottom:25px;
+    color:#2c3e50; /* لون العنوان غامق وواضح */
+    border-bottom: 2px solid #ecf0f1; /* خط فاصل خفيف */
+    padding-bottom: 15px;
+}
+h3 {
+    color: #34495e;
+    margin-top: 30px;
+}
 
-/* 🛑 تثبيت حجم حقول الإدخال والاختيار */
+/* ==================================
+   نموذج التأجير (Form)
+   ================================== */
+form{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px; /* مسافة جيدة بين الحقول */
+    align-items:center;
+    justify-content:flex-start;
+    margin-bottom: 30px;
+    padding: 20px; 
+    border: 1px solid #dfe6e9; /* حدود ناعمة */
+    border-radius: 10px;
+    background: #f7f9fa; /* خلفية فاتحة للنموذج */
+}
+
+/* 🛑 تثبيت حجم حقول الإدخال والاختيار مع مظهر ناعم */
 form input:not([type="button"]):not(#add-color-input), 
 form select {
-    padding: 8px;
-    margin: 0;
+    padding: 10px 12px;
     width: 180px; /* عرض ثابت لكل حقل */
     box-sizing: border-box; 
     flex-grow: 0; 
     flex-shrink: 0; 
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #bdc3c7; /* حدود رمادية ناعمة */
+    border-radius: 8px; /* حواف مستديرة للحقول */
     font-size: 14px;
+    color: #333;
+    transition: border-color 0.3s;
+}
+form input:focus, form select:focus {
+    border-color: #3498db; /* تظهير الحقل النشط */
+    outline: none;
 }
 
-/* تعديل خاص لزر التأكيد */
+/* ==================================
+   الأزرار (Buttons)
+   ================================== */
+/* زر تأكيد التأجير */
 form button {
-    padding: 8px 18px;
-    margin: 0;
-    background: #2ecc71; /* لون أخضر للحجز */
+    padding: 10px 20px;
+    background: #1abc9c; /* أخضر سماوي مريح */
     color: #fff;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
-    height: 38px; 
-    font-size: 14px;
+    border-radius: 8px;
+    height: 42px; /* مطابقة ارتفاع الحقول */
     font-weight: bold;
-    transition: background 0.3s;
+    transition: background 0.3s, transform 0.1s;
 }
-form button:hover{background: #27ae60;}
+form button:hover{
+    background: #16a085;
+    transform: translateY(-1px); /* تأثير خفيف عند التمرير */
+}
 
-/* تنسيق أزرار المخزون */
-.stock-buttons{margin:15px 0;text-align:center;border-top: 1px solid #eee; padding-top: 15px;}
+/* أزرار المخزون والإدارة */
+.stock-buttons{
+    margin:15px 0;
+    text-align:center;
+    border-top: 1px solid #ecf0f1; 
+    padding-top: 25px;
+}
 .stock-buttons button{
     width:auto;
-    margin:5px 3px;
-    padding:8px 15px;
-    background:#3498db;
+    margin:5px 4px;
+    padding:10px 18px;
+    background:#3498db; /* أزرق هادئ */
     color:#fff;
     border:none;
     cursor:pointer;
-    border-radius:4px;
-    font-size: 13px;
+    border-radius: 6px;
+    font-size: 14px;
     transition: background 0.3s;
 }
 .stock-buttons button:hover{background:#2980b9;}
-.stock-buttons button[style*="8e44ad"] { /* زر إدارة الألوان */
-    padding: 10px 25px;
+/* زر إدارة الألوان */
+.stock-buttons button[style*="8e44ad"] {
+    padding: 12px 30px;
     font-weight: bold;
-    background: #8e44ad !important;
+    background: #9b59b6 !important; /* بنفسجي ودّي */
+    box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
 }
 .stock-buttons button[style*="8e44ad"]:hover {
-    background: #9b59b6 !important;
+    background: #8e44ad !important;
 }
 
-/* تنسيق الجدول */
-table{width:100%;border-collapse:collapse;margin-top:15px}
-th,td{border:1px solid #ccc;padding:8px;text-align:center;font-size:13px; white-space: nowrap;}
-th{background-color: #f2f2f2; color: #555;}
-.available{background:#e6ffe6}
-.unavailable{background:#ffd6d6}
-.returned{background:#dcdcdc !important}
+/* ==================================
+   الجدول (Table)
+   ================================== */
+table{
+    width:100%;
+    border-collapse:separate; /* لفصل الحدود وإعطاء مظهر أنظف */
+    border-spacing: 0 5px; /* مسافة بين الصفوف */
+    margin-top:20px;
+}
+th,td{
+    border:none; /* إزالة الحدود الداخلية */
+    padding:10px;
+    text-align:center;
+    font-size:13px; 
+    white-space: nowrap;
+}
+th{
+    background-color: #ecf0f1; /* خلفية رؤوس الأعمدة */
+    color: #555;
+    font-weight: bold;
+    border-bottom: 2px solid #dfe6e9;
+}
+tr {
+    background: #ffffff;
+    border-radius: 8px; /* حواف مستديرة للصفوف */
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* ظل خفيف لكل صف */
+}
+
+/* تنسيق حالات القطع */
+.available{background:#e8ffe8}
+.unavailable{background:#fbe6e6}
+.returned{background:#f0f3f5 !important; color: #7f8c8d;} /* رمادي فاتح للمرتجع */
+
+/* أزرار الإرجاع والحذف داخل الجدول */
+td button {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+td button[onclick*="returnRental"] {
+    background: #f39c12; /* برتقالي للإرجاع */
+}
+td button[onclick*="returnRental"]:hover {
+    background: #e67e22;
+}
+td button[onclick*="deleteRental"] {
+    background: #e74c3c; /* أحمر للحذف */
+}
+td button[onclick*="deleteRental"]:hover {
+    background: #c0392b;
+}
 </style>
 </head>
 <body>
