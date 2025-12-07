@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>مخزون السراويل</title>
+    <style>
+        body{font-family:Arial;direction:rtl;background:#f4f4f4;margin:0;padding:0;}
+        .container{max-width:900px;margin:auto;background:#fff;padding:20px;border-radius:8px}
+        h2{text-align:center;margin-bottom:15px;}
+        table{width:100%;border-collapse:collapse;margin-top:15px}
+        th,td{border:1px solid #ccc;padding:8px;text-align:center;font-size:14px;}
+        .available{background:#e8ffe8}
+        .unavailable{background:#ffd6d6}
+        button{padding:7px 12px;margin:5px;background:#3498db;color:#fff;border:none;cursor:pointer;border-radius:4px;}
+        button:hover{opacity:0.85;}
+        .add-item-form{background:#f9f9f9; padding:15px; border-radius:4px; margin-bottom:20px;}
+        .add-item-form input{padding:8px; border:1px solid #ccc; border-radius:3px;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>مخزون السراويل (إضافة يدوية)</h2>
+
+    <div class="add-item-form">
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+            <input id="itemName" placeholder="اسم القطعة (مثال: سروال 5)" style="flex:2;">
+            <input id="itemSize" placeholder="المقاس (مثل 50)" style="flex:1; max-width:100px;">
+            <input id="itemColor" placeholder="اللون (مثل أسود)" style="flex:1; max-width:100px;">
+            <button onclick="addItem()" style="flex:1; max-width:150px; background:#27ae60;">+ إضافة قطعة</button>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>المقاس</th>
+                <th>اللون</th> 
+                <th>الحالة</th>
+                <th>حذف</th>
+            </tr>
+        </thead>
+        <tbody id="stockBody"></tbody>
+    </table>
+    <button onclick="window.location.href='index.html'">رجوع للصفحة الرئيسية</button>
+</div>
+
+<script>
+const STOCK_TYPE = "pants";
+
+function getStock() {
+    return JSON.parse(localStorage.getItem(STOCK_TYPE)) || [];
+}
+
+function saveStock(stock) {
+    localStorage.setItem(STOCK_TYPE, JSON.stringify(stock));
+}
+
+function addItem() {
+    const name = document.getElementById("itemName").value.trim();
+    const size = document.getElementById("itemSize").value.trim();
+    const color = document.getElementById("itemColor").value.trim();
+    
+    if (!name || !size || !color) {
+        alert("الرجاء إدخال الاسم والمقاس واللون.");
+        return;
+    }
+    
+    let stock = getStock();
+    
+    const newItem = {
+        name: name,
+        size: size, 
+        color: color,
+        status: "متوفر"
+    };
+
+    stock.push(newItem);
+    saveStock(stock); 
+    renderStock(); 
+    
+    // مسح الحقول
+    document.getElementById("itemName").value = "";
+    document.getElementById("itemSize").value = "";
+    document.getElementById("itemColor").value = "";
+    
+    alert(`تم إضافة قطعة جديدة من نوع ${STOCK_TYPE}.`);
+}
+
+function deleteItem(index) {
+    if (!confirm("هل أنت متأكد من حذف هذه القطعة؟ لن تتمكن من التراجع.")) {
+        return;
+    }
+    
+    let stock = getStock();
+    
+    if (stock[index].status === "مؤجر") {
+        alert("لا يمكن حذف هذه القطعة. يجب إرجاعها أولاً من صفحة التأجير الرئيسية.");
+        return;
+    }
+    
+    stock.splice(index, 1);
+    
+    saveStock(stock);
+    renderStock();
+}
+
+
+function renderStock(){
+    let stock = getStock();
+    let tbody = document.getElementById("stockBody");
+    tbody.innerHTML = "";
+
+    if (stock.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">المخزون فارغ. يمكنك البدء بإضافة قطع جديدة.</td></tr>';
+        return;
+    }
+
+    stock.forEach((item, index) => {
+        let statusClass = item.status === "متوفر" ? "available" : "unavailable";
+        
+        let deleteButton = item.status === "مؤجر" 
+            ? `<button disabled style="background:#ccc; cursor:not-allowed;">مؤجرة</button>`
+            : `<button onclick="deleteItem(${index})" style="background:#c0392b;">حذف</button>`;
+        
+        tbody.innerHTML += `
+            <tr class="${statusClass}">
+                <td>${item.name}</td>
+                <td>${item.size || "-"}</td>
+                <td>${item.color || "-"}</td> 
+                <td>${item.status}</td>
+                <td>${deleteButton}</td>
+            </tr>
+        `;
+    });
+}
+
+renderStock();
+</script>
+
+</body>
+</html>

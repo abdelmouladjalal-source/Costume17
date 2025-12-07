@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة الألوان</title>
+    <style>
+        body{font-family:Arial;direction:rtl;background:#f4f4f4;margin:0;padding:0;}
+        .container{max-width:600px;margin:50px auto;background:#fff;padding:30px;border-radius:8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+        h2{text-align:center;color:#333;margin-bottom:20px;}
+        .color-management{padding:20px; border: 1px solid #ddd; border-radius: 4px; background:#f9f9f9;}
+        .action-group{display: flex; gap: 10px; align-items: center; margin-bottom: 15px;}
+        .action-group input, .action-group select{padding: 8px; flex: 1; border: 1px solid #ccc; border-radius: 4px;}
+        .action-group button{padding: 8px 15px; border: none; cursor: pointer; border-radius: 4px; color: white;}
+        #addColorBtn{background:#2ecc71;}
+        #deleteColorBtn{background:#e74c3c;}
+        .current-list{margin-top: 25px;}
+        .current-list p{font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;}
+        #colorList{list-style: none; padding: 0;}
+        #colorList li{background: #eee; padding: 8px; margin-bottom: 5px; border-radius: 3px;}
+        #backBtn{display: block; width: 100%; padding: 10px; background: #3498db; margin-top: 20px;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎨 إدارة ألوان المخزون</h2>
+
+    <div class="color-management">
+        <p style="text-align:center; font-weight:bold;">التحكم بقائمة الألوان الرئيسية</p>
+
+        <div class="action-group">
+            <input type="text" id="newColorName" placeholder="اسم اللون الجديد">
+            <button type="button" onclick="addColor()" id="addColorBtn">+ إضافة لون</button>
+        </div>
+
+        <div class="action-group">
+            <select id="colorToDelete">
+                <option value="">--اختر لون للحذف--</option>
+            </select>
+            <button type="button" onclick="deleteColor()" id="deleteColorBtn">- حذف اللون</button>
+        </div>
+    </div>
+
+    <div class="current-list">
+        <p>قائمة الألوان المتاحة حاليًا:</p>
+        <ul id="colorList"></ul>
+    </div>
+    
+    <button onclick="window.location.href='index.html'" id="backBtn">رجوع للصفحة الرئيسية</button>
+</div>
+
+<script>
+let AVAILABLE_COLORS = JSON.parse(localStorage.getItem("available_colors")) || ["أسود", "أزرق", "رمادي", "بني", "أبيض"]; 
+
+// تحميل جميع بيانات المخزون للتحقق قبل الحذف
+function loadAllStock() {
+    return {
+        pants: JSON.parse(localStorage.getItem("pants")) || [],
+        gilets: JSON.parse(localStorage.getItem("gilets")) || [],
+        vests: JSON.parse(localStorage.getItem("vests")) || [],
+        shirts: JSON.parse(localStorage.getItem("shirts")) || [],
+        belts: JSON.parse(localStorage.getItem("belts")) || [],
+        shoes: JSON.parse(localStorage.getItem("shoes")) || [],
+        ties: JSON.parse(localStorage.getItem("ties")) || [],
+        bows: JSON.parse(localStorage.getItem("bows")) || [],
+        broches: JSON.parse(localStorage.getItem("broches")) || []
+    };
+}
+
+function saveColors() {
+    localStorage.setItem("available_colors", JSON.stringify(AVAILABLE_COLORS));
+}
+
+function renderColorManagement() {
+    const colorSelect = document.getElementById("colorToDelete");
+    const colorList = document.getElementById("colorList");
+    
+    colorSelect.innerHTML = '<option value="">--اختر لون للحذف--</option>';
+    colorList.innerHTML = '';
+
+    AVAILABLE_COLORS.forEach(color => {
+        // قائمة الحذف
+        let option = document.createElement("option");
+        option.value = option.text = color;
+        colorSelect.appendChild(option);
+
+        // قائمة العرض الحالية
+        let listItem = document.createElement("li");
+        listItem.textContent = color;
+        colorList.appendChild(listItem);
+    });
+}
+
+// ===== إضافة وحذف لون جديد =====
+
+function addColor() {
+    const newColor = document.getElementById("newColorName").value.trim();
+    if (!newColor) {
+        alert("الرجاء إدخال اسم اللون.");
+        return;
+    }
+    if (AVAILABLE_COLORS.includes(newColor)) {
+        alert(`اللون "${newColor}" موجود بالفعل.`);
+        return;
+    }
+    
+    AVAILABLE_COLORS.push(newColor);
+    saveColors(); 
+    renderColorManagement(); 
+    document.getElementById("newColorName").value = '';
+    alert(`تم إضافة اللون "${newColor}" بنجاح.`);
+}
+
+function deleteColor() {
+    const colorToDelete = document.getElementById("colorToDelete").value;
+    if (!colorToDelete) {
+        alert("الرجاء اختيار لون للحذف.");
+        return;
+    }
+    
+    // التحقق: هل اللون قيد الاستخدام في أي قطعة مخزون؟
+    const allStock = loadAllStock();
+    const allStockArrays = Object.values(allStock);
+    
+    const isColorUsedInStock = allStockArrays.some(arr => arr.some(item => item.color === colorToDelete));
+
+    if (isColorUsedInStock) {
+        alert(`لا يمكن حذف اللون "${colorToDelete}". يجب حذف جميع القطع التي تستخدم هذا اللون أولاً من صفحات المخزون الفردية (السراويل، الجيلي، إلخ).`);
+        return;
+    }
+
+    if (!confirm(`هل أنت متأكد من حذف اللون "${colorToDelete}"؟`)) {
+        return;
+    }
+    
+    AVAILABLE_COLORS = AVAILABLE_COLORS.filter(color => color !== colorToDelete);
+    saveColors(); 
+    renderColorManagement(); 
+    alert(`تم حذف اللون "${colorToDelete}" بنجاح.`);
+}
+
+// تشغيل العرض عند التحميل
+renderColorManagement();
+</script>
+
+</body>
+</html>

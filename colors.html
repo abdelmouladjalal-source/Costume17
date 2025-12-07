@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>ملخص مخزون الألوان</title>
+    <style>
+        body{font-family:Arial;direction:rtl;background:#f4f4f4;margin:0;padding:0;}
+        .container{max-width:800px;margin:auto;background:#fff;padding:20px;border-radius:8px}
+        h2{text-align:center;margin-bottom:15px;}
+        table{width:100%;border-collapse:collapse;margin-top:15px}
+        th,td{border:1px solid #ccc;padding:10px;text-align:center;font-size:14px;}
+        .available{background:#e8ffe8; font-weight:bold;}
+        .unavailable{background:#ffd6d6}
+        button{padding:7px 12px;margin:5px;background:#3498db;color:#fff;border:none;cursor:pointer;border-radius:4px;}
+        button:hover{opacity:0.85;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>ملخص مخزون الألوان الكلي</h2>
+    <p style="text-align:center; font-size:14px; color:#555;">(يجمع إجمالي القطع المتوفرة والمؤجرة حسب اللون من جميع أنواع المخزون)</p>
+    <table>
+        <thead>
+            <tr>
+                <th>اللون</th>
+                <th>إجمالي القطع</th>
+                <th>المتوفّر حالياً</th>
+                <th>المؤجّر</th>
+            </tr>
+        </thead>
+        <tbody id="colorStockBody"></tbody>
+    </table>
+    <button onclick="window.location.href='index.html'">رجوع للصفحة الرئيسية</button>
+</div>
+
+<script>
+const AVAILABLE_COLORS = ["أسود", "أزرق", "رمادي", "بني", "أبيض"]; 
+
+function renderColorStock(){
+    // يتم تحميل جميع المخازن من localStorage
+    const stockTypes = ["pants", "gilets", "vests", "shirts", "belts", "shoes", "ties", "bows", "broches"];
+    let colorCounts = {};
+    let tbody = document.getElementById("colorStockBody");
+    tbody.innerHTML = "";
+
+    // تهيئة العدادات لجميع الألوان المتاحة
+    AVAILABLE_COLORS.forEach(color => {
+        colorCounts[color] = { total: 0, available: 0, rented: 0 };
+    });
+
+    // المرور على كل نوع مخزون لحساب الألوان
+    stockTypes.forEach(type => {
+        let currentStock = JSON.parse(localStorage.getItem(type)) || [];
+        currentStock.forEach(item => {
+            if (item.color) {
+                const color = item.color;
+                if (!colorCounts[color]) {
+                    // إذا أضاف المستخدم لونًا جديدًا يدويًا ولم يكن في قائمة AVAILABLE_COLORS
+                    colorCounts[color] = { total: 0, available: 0, rented: 0 };
+                }
+                
+                colorCounts[color].total++;
+                if (item.status === "متوفر") {
+                    colorCounts[color].available++;
+                } else if (item.status === "مؤجر") {
+                    colorCounts[color].rented++;
+                }
+            }
+        });
+    });
+
+    // عرض النتائج في الجدول
+    Object.keys(colorCounts).sort().forEach(color => {
+        const counts = colorCounts[color];
+        if (counts.total > 0) {
+             tbody.innerHTML += `
+                <tr>
+                    <td>${color}</td>
+                    <td>${counts.total}</td>
+                    <td class="${counts.available > 0 ? 'available' : 'unavailable'}">${counts.available}</td>
+                    <td class="${counts.rented > 0 ? 'unavailable' : ''}">${counts.rented}</td>
+                </tr>
+            `;
+        }
+    });
+
+    if (tbody.innerHTML === "") {
+        tbody.innerHTML = '<tr><td colspan="4">لا يوجد قطع مسجلة حالياً بأي لون.</td></tr>';
+    }
+}
+
+renderColorStock();
+</script>
+
+</body>
+</html>

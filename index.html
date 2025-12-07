@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>COSTUME17 - الرئيسية</title>
+<style>
+body{font-family:Arial, sans-serif;direction:rtl;background:#f4f4f4;margin:0;padding:0;}
+.container{max-width:1200px;margin:auto;background:#fff;padding:20px;border-radius:8px;box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+h2{text-align:center;margin-bottom:20px;color:#333;border-bottom: 2px solid #ccc;padding-bottom: 10px;}
+form{display:flex;flex-wrap:wrap;gap:15px;align-items:center;justify-content:flex-start; margin-bottom: 25px;padding: 15px; border: 1px solid #eee; border-radius: 6px;}
+
+/* 🛑 تثبيت حجم حقول الإدخال والاختيار */
+form input:not([type="button"]):not(#add-color-input), 
+form select {
+    padding: 8px;
+    margin: 0;
+    width: 180px; /* عرض ثابت لكل حقل */
+    box-sizing: border-box; 
+    flex-grow: 0; 
+    flex-shrink: 0; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* تعديل خاص لزر التأكيد */
+form button {
+    padding: 8px 18px;
+    margin: 0;
+    background: #2ecc71; /* لون أخضر للحجز */
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    height: 38px; 
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+form button:hover{background: #27ae60;}
+
+/* تنسيق أزرار المخزون */
+.stock-buttons{margin:15px 0;text-align:center;border-top: 1px solid #eee; padding-top: 15px;}
+.stock-buttons button{
+    width:auto;
+    margin:5px 3px;
+    padding:8px 15px;
+    background:#3498db;
+    color:#fff;
+    border:none;
+    cursor:pointer;
+    border-radius:4px;
+    font-size: 13px;
+    transition: background 0.3s;
+}
+.stock-buttons button:hover{background:#2980b9;}
+.stock-buttons button[style*="8e44ad"] { /* زر إدارة الألوان */
+    padding: 10px 25px;
+    font-weight: bold;
+    background: #8e44ad !important;
+}
+.stock-buttons button[style*="8e44ad"]:hover {
+    background: #9b59b6 !important;
+}
+
+/* تنسيق الجدول */
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th,td{border:1px solid #ccc;padding:8px;text-align:center;font-size:13px; white-space: nowrap;}
+th{background-color: #f2f2f2; color: #555;}
+.available{background:#e6ffe6}
+.unavailable{background:#ffd6d6}
+.returned{background:#dcdcdc !important}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>نظام إدارة تأجير الأزياء - COSTUME17</h2>
+
+<form>
+<input id="fname" placeholder=" الاسم واللقب">
+<input id="phone" placeholder="رقم الهاتف">
+<input type="date" id="rentDate" title="تاريخ التأجير">
+<input type="date" id="returnDate" title="تاريخ الإرجاع المتوقع">
+
+<select id="color" onchange="refreshSelects(true)">
+    <option value="">--اختيار اللون--</option>
+</select>
+
+<select id="pant" onchange="refreshSelects(false)"></select>
+<select id="gilet"></select> 
+<select id="vest"></select> 
+
+<select id="shirt"></select>
+<select id="belt"></select>
+<select id="shoe"></select>
+<select id="tie"></select>
+<select id="bow"></select>
+<select id="broche"></select>
+
+<button type="button" onclick="addRental()">تأكيد التأجير</button>
+</form>
+
+
+<div class="stock-buttons">
+    <button onclick="window.location.href='color_admin.html'" style="background:#8e44ad;">إدارة الألوان الرئيسية 🎨</button>
+    
+    <button onclick="window.location.href='pants.html'">السراويل</button>
+    <button onclick="window.location.href='gilets.html'">الجيلي</button>
+    <button onclick="window.location.href='vests.html'">الفاست</button>
+    <button onclick="window.location.href='shirts.html'">القمصان</button>
+    <button onclick="window.location.href='belts.html'">الأحزمة</button>
+    <button onclick="window.location.href='shoes.html'">الأحذية</button>
+    <button onclick="window.location.href='ties.html'">ربطات العنق</button>
+    <button onclick="window.location.href='bows.html'">الفراشات</button>
+    <button onclick="window.location.href='broches.html'">البروش</button>
+</div>
+
+<h3>قائمة المؤجرات الحالية</h3>
+<table>
+<thead>
+<tr>
+<th>الاسم واللقب</th>
+<th>الهاتف</th>
+<th>اللون</th>
+<th>السروال</th>
+<th>الجيلي</th>
+<th>الفاست</th>
+<th>القميص</th>
+<th>الحزام</th>
+<th>الحذاء</th>
+<th>الربطة</th>
+<th>الفراشة</th>
+<th>البروش</th>
+<th>تاريخ الإرجاع</th>
+<th>إرجاع</th>
+<th>حذف</th>
+</tr>
+</thead>
+<tbody id="rentalsBody"></tbody>
+</table>
+
+</div>
+
+<script src="script.js"></script> 
+
+</body>
+</html>
