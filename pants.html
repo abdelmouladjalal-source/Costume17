@@ -1,16 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
     <title>مخزون السراويل</title>
     <style>
+        /* الأنماط المضمنة (CSS) */
         body{font-family:Arial;direction:rtl;background:#f4f4f4;margin:0;padding:0;}
         .container{max-width:900px;margin:auto;background:#fff;padding:20px;border-radius:8px}
         h2{text-align:center;margin-bottom:15px;}
         table{width:100%;border-collapse:collapse;margin-top:15px}
         th,td{border:1px solid #ccc;padding:8px;text-align:center;font-size:14px;}
         .available{background:#e8ffe8}
-        .unavailable{background:#ffd6d6}
+        .unavailable{background:#ffd6d6} 
         button{padding:7px 12px;margin:5px;background:#3498db;color:#fff;border:none;cursor:pointer;border-radius:4px;}
         button:hover{opacity:0.85;}
         .add-item-form{background:#f9f9f9; padding:15px; border-radius:4px; margin-bottom:20px;}
@@ -21,12 +22,11 @@
 
 <div class="container">
     <h2>مخزون السراويل (إضافة يدوية)</h2>
-
     <div class="add-item-form">
         <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
             <input id="itemName" placeholder="اسم القطعة (مثال: سروال 5)" style="flex:2;">
-            <input id="itemSize" placeholder="المقاس (مثل 50)" style="flex:1; max-width:100px;">
-            <input id="itemColor" placeholder="اللون (مثل أسود)" style="flex:1; max-width:100px;">
+            <input id="itemSize" placeholder="المقاس (مثال: 50 أو 42-58)" style="flex:1; max-width:150px;">
+            <input id="itemColor" placeholder="اللون (مثل أسود)" style="flex:1; max-width:150px;">
             <button onclick="addItem()" style="flex:1; max-width:150px; background:#27ae60;">+ إضافة قطعة</button>
         </div>
     </div>
@@ -42,60 +42,128 @@
         </thead>
         <tbody id="stockBody"></tbody>
     </table>
-    <button onclick="window.location.href='index.html'">رجوع للصفحة الرئيسية</button>
+    <button onclick="window.location.href='inventory_management.html'">رجوع للصفحة الرئيسية</button>
 </div>
 
 <script>
 const STOCK_TYPE = "pants";
 
 function getStock() {
-    return JSON.parse(localStorage.getItem(STOCK_TYPE)) || [];
+    let stock = JSON.parse(localStorage.getItem(STOCK_TYPE)) || [];
+    return stock.map((item, index) => ({
+        ...item,
+        rentedPeriods: item.rentedPeriods || [], 
+        id: item.id !== undefined ? item.id : index 
+    }));
 }
 
 function saveStock(stock) {
     localStorage.setItem(STOCK_TYPE, JSON.stringify(stock));
 }
 
+/**
+ * تحدد حالة القطعة في الوقت الحالي (اليوم) بناءً على الفترات المؤجرة.
+ */
+function checkCurrentStatus(item) {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const periods = item.rentedPeriods || [];
+
+    for (const period of periods) {
+        if (period.isReturned) continue; 
+        
+        const periodStart = period.start;
+        const periodEnd = period.end;
+
+        // التحقق من التداخل: إذا كان اليوم >= البداية و اليوم < النهاية
+        if (todayStr >= periodStart && todayStr < periodEnd) {
+            return "مؤجر حالياً";
+        }
+    }
+    return "متوفر";
+}
+
+// =======================================================
+// ===== دالة إضافة المخزون (بالمقاسات الزوجية وبدون إشعار نجاح) =====
+// =======================================================
+
 function addItem() {
     const name = document.getElementById("itemName").value.trim();
-    const size = document.getElementById("itemSize").value.trim();
+    const sizeInput = document.getElementById("itemSize").value.trim();
     const color = document.getElementById("itemColor").value.trim();
     
-    if (!name || !size || !color) {
+    // التحقق الأساسي
+    if (!name || !sizeInput || !color) {
         alert("الرجاء إدخال الاسم والمقاس واللون.");
         return;
     }
     
     let stock = getStock();
-    
-    const newItem = {
-        name: name,
-        size: size, 
-        color: color,
-        status: "متوفر"
-    };
+    let sizesToAdd = [];
 
-    stock.push(newItem);
-    saveStock(stock); 
-    renderStock(); 
-    
-    // مسح الحقول
-    document.getElementById("itemName").value = "";
-    document.getElementById("itemSize").value = "";
-    document.getElementById("itemColor").value = "";
-    
-    alert(`تم إضافة قطعة جديدة من نوع ${STOCK_TYPE}.`);
-}
+    // 1. تحليل حقل المقاس لتحديد النطاق (مثلاً 42-58)
+    const rangeMatch = sizeInput.match(/^(\d+)[-–](\d+)$/);
 
-function deleteItem(index) {
-    if (!confirm("هل أنت متأكد من حذف هذه القطعة؟ لن تتمكن من التراجع.")) {
+    if (rangeMatch) {
+        let startSize = parseInt(rangeMatch[1]);
+        const endSize = parseInt(rangeMatch[2]);
+
+        if (startSize > endSize) {
+            alert("المقاس الأول يجب أن يكون أصغر من المقاس الثاني.");
+            return;
+        }
+
+        // إذا كان المقاس الأول فردياً، نبدأ من المقاس الزوجي الذي يليه
+        if (startSize % 2 !== 0) {
+            startSize++;
+        }
+
+        // إنشاء المقاسات بزيادة 2 (زوجي فقط)
+        for (let size = startSize; size <= endSize; size += 2) {
+            sizesToAdd.push(String(size));
+        }
+
+    } else {
+        // إذا كان مقاساً واحداً فقط
+        sizesToAdd.push(sizeInput);
+    }
+    
+    // 2. إنشاء القطع وإضافتها إلى المخزون
+    const itemsAddedCount = sizesToAdd.length;
+
+    if (itemsAddedCount === 0 && rangeMatch) {
+        alert("لم يتم إضافة أي مقاسات في النطاق المحدد. تأكد من إدخال أرقام زوجية في النطاق.");
         return;
     }
     
+    sizesToAdd.forEach(size => {
+        const newItem = {
+            name: name,
+            size: size, 
+            color: color,
+            rentedPeriods: [], 
+            id: Date.now() + Math.random() 
+        };
+        stock.push(newItem);
+    });
+
+    saveStock(stock); 
+    renderStock(); 
+    
+    // مسح الحقول بعد الإضافة
+    document.getElementById("itemName").value = "";
+    document.getElementById("itemSize").value = "";
+    document.getElementById("itemColor").value = "";
+
+    // 🛑 تم حذف إشعار النجاح (alert) هنا.
+}
+
+function deleteItem(index) {
     let stock = getStock();
     
-    if (stock[index].status === "مؤجر") {
-        alert("لا يمكن حذف هذه القطعة. يجب إرجاعها أولاً من صفحة التأجير الرئيسية.");
+    const currentStatus = checkCurrentStatus(stock[index]); 
+
+    if (currentStatus === "مؤجر حالياً") {
+        console.error("ERROR: لا يمكن حذف هذه القطعة. يجب إرجاعها أولاً.");
         return;
     }
     
@@ -107,7 +175,7 @@ function deleteItem(index) {
 
 
 function renderStock(){
-    let stock = getStock();
+    let stock = getStock(); 
     let tbody = document.getElementById("stockBody");
     tbody.innerHTML = "";
 
@@ -117,9 +185,11 @@ function renderStock(){
     }
 
     stock.forEach((item, index) => {
-        let statusClass = item.status === "متوفر" ? "available" : "unavailable";
+        const currentStatus = checkCurrentStatus(item); 
         
-        let deleteButton = item.status === "مؤجر" 
+        let statusClass = currentStatus === "متوفر" ? "available" : "unavailable";
+        
+        let deleteButton = currentStatus === "مؤجر حالياً" 
             ? `<button disabled style="background:#ccc; cursor:not-allowed;">مؤجرة</button>`
             : `<button onclick="deleteItem(${index})" style="background:#c0392b;">حذف</button>`;
         
@@ -128,7 +198,7 @@ function renderStock(){
                 <td>${item.name}</td>
                 <td>${item.size || "-"}</td>
                 <td>${item.color || "-"}</td> 
-                <td>${item.status}</td>
+                <td>${currentStatus}</td> 
                 <td>${deleteButton}</td>
             </tr>
         `;
