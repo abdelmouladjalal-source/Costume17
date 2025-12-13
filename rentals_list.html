@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>قائمة المؤجرات الحالية</title>
+<style>
+/* **مهم**: يجب أن تضع هنا كل أكواد CSS المتعلقة بالجدول (table, th, td, tr, .available, .unavailable, .returned, td button)
+   بالإضافة إلى الأكواد الأساسية (body, .container, h2, h3) */
+body{
+    font-family: 'Tahoma', Arial, sans-serif;
+    direction:rtl;
+    background:#eef1f5;
+    margin:0;
+    padding:30px 0;
+}
+.container{
+    max-width:1200px;
+    margin:auto;
+    background:#ffffff;
+    padding:30px;
+    border-radius:15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+h2{
+    text-align:center;
+    margin-bottom:25px;
+    color:#2c3e50;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 15px;
+}
+h3 {
+    color: #34495e;
+    margin-top: 30px;
+}
+
+/* أكواد الجدول */
+table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing: 0 5px;
+    margin-top:20px;
+}
+th,td{
+    border:none;
+    padding:10px;
+    text-align:center;
+    font-size:13px;
+    white-space: nowrap;
+}
+th{
+    background-color: #ecf0f1;
+    color: #555;
+    font-weight: bold;
+    border-bottom: 2px solid #dfe6e9;
+}
+tr {
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.available{background:#e8ffe8}
+.unavailable{background:#fbe6e6}
+.returned{background:#f0f3f5 !important; color: #7f8c8d;}
+td button {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+td button[onclick*="returnRental"] {
+    background: #f39c12;
+}
+td button[onclick*="returnRental"]:hover {
+    background: #e67e22;
+}
+td button[onclick*="deleteRental"] {
+    background: #e74c3c;
+}
+td button[onclick*="deleteRental"]:hover {
+    background: #c0392b;
+}
+
+/* تنسيق زر العودة */
+.back-button-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.back-button-container button {
+    padding: 10px 20px;
+    background: #34495e; /* لون مختلف لزر العودة */
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+.back-button-container button:hover {
+    background: #2c3e50;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>قائمة المؤجرات الحالية 📋</h2>
+
+<div class="back-button-container">
+    <button onclick="window.location.href='index.html'">العودة للصفحة الرئيسية 🏠</button>
+</div>
+
+<h3>كافة عمليات التأجير</h3>
+<table>
+<thead>
+<tr>
+<th>الاسم واللقب</th>
+<th>الهاتف</th>
+<th>اللون</th>
+<th>السروال</th>
+<th>الجيلي</th>
+<th>الفاست</th>
+<th>القميص</th>
+<th>الحزام</th>
+<th>الحذاء</th>
+<th>الربطة</th>
+<th>الفراشة</th>
+<th>البروش</th>
+<th>تاريخ الإرجاع</th>
+<th>إرجاع</th>
+<th>حذف</th>
+</tr>
+</thead>
+<tbody id="rentalsBody"></tbody>
+</table>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

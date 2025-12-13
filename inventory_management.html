@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>إدارة المخزون</title>
+<style>
+/* **مهم**: يجب أن تضع هنا كل أكواد CSS المتعلقة بـ body, .container, h2, h3, .stock-buttons, .stock-buttons button 
+   لتحافظ على نفس المظهر. الأفضل هو وضعها في ملف styles.css واستدعائه. */
+body{
+    font-family: 'Tahoma', Arial, sans-serif;
+    direction:rtl;
+    background:#eef1f5;
+    margin:0;
+    padding:30px 0;
+}
+.container{
+    max-width:1200px;
+    margin:auto;
+    background:#ffffff;
+    padding:30px;
+    border-radius:15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+h2{
+    text-align:center;
+    margin-bottom:25px;
+    color:#2c3e50;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 15px;
+}
+.stock-buttons{
+    margin:15px 0;
+    text-align:center;
+    padding: 25px 0;
+}
+.stock-buttons button{
+    width:auto;
+    margin:5px 8px; /* زيادة الهامش بين الأزرار */
+    padding:12px 20px;
+    background:#3498db;
+    color:#fff;
+    border:none;
+    cursor:pointer;
+    border-radius: 8px; /* جعل الحواف أكثر استدارة */
+    font-size: 15px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+.stock-buttons button:hover{background:#2980b9;}
+.stock-buttons button[style*="8e44ad"] {
+    padding: 14px 35px; /* تكبير زر إدارة الألوان */
+    font-weight: bold;
+    background: #9b59b6 !important;
+    box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
+}
+.stock-buttons button[style*="8e44ad"]:hover {
+    background: #8e44ad !important;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>إدارة المخزون ⚙️</h2>
+
+<div class="stock-buttons">
+    <button onclick="window.location.href='index.html'" style="background:#e74c3c;">العودة للصفحة الرئيسية 🏠</button>
+    <hr style="margin: 30px 0; border-top: 1px solid #ecf0f1;">
+
+    <button onclick="window.location.href='color_admin.html'" style="background:#8e44ad;">إدارة الألوان الرئيسية 🎨</button>
+
+    <button onclick="window.location.href='pants.html'">السراويل</button>
+    <button onclick="window.location.href='gilets.html'">الجيلي</button>
+    <button onclick="window.location.href='vests.html'">الفاست</button>
+    <button onclick="window.location.href='shirts.html'">القمصان</button>
+    <button onclick="window.location.href='belts.html'">الأحزمة</button>
+    <button onclick="window.location.href='shoes.html'">الأحذية</button>
+    <button onclick="window.location.href='ties.html'">ربطات العنق</button>
+    <button onclick="window.location.href='bows.html'">الفراشات</button>
+    <button onclick="window.location.href='broches.html'">البروش</button>
+</div>
+
+</div>
+
+</body>
+</html>
