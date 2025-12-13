@@ -2,176 +2,158 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>COSTUME17</title>
+<title>LOCATION COSTUME - لوحة التحكم الرئيسية</title>
 <style>
 /* ==================================
-   الخلفية والأبعاد الأساسية
-   ================================== */
-body{
-    font-family: 'Tahoma', Arial, sans-serif; /* خط مريح للعين */
-    direction:rtl;
-    background:#eef1f5; /* خلفية هادئة جداً */
-    margin:0;
-    padding:30px 0;
+   الخلفية والأبعاد الأساسية
+   ================================== */
+:root {
+    /* لوحة ألوان محسّنة */
+    --primary-color: #007bff; /* أزرق نظيف */
+    --success-color: #28a745; /* أخضر للعمليات الإيجابية */
+    --danger-color: #dc3545; /* أحمر لقائمة المؤجرات */
+    --background-light: #f4f6f8; /* خلفية هادئة */
+    --text-dark: #343a40;
+    --box-shadow-light: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
-.container{
-    max-width:1200px;
-    margin:auto;
-    background:#ffffff; /* الواجهة بيضاء وواضحة */
-    padding:30px;
-    border-radius:15px; /* حواف مستديرة للمظهر الودّي */
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); /* ظل خفيف لإبراز الواجهة */
+
+body {
+    font-family: 'Tahoma', Arial, sans-serif;
+    direction: rtl;
+    background: var(--background-light);
+    margin: 0;
+    padding: 30px 0;
 }
-h2{
-    text-align:center;
-    margin-bottom:25px;
-    color:#2c3e50; /* لون العنوان غامق وواضح */
-    border-bottom: 2px solid #ecf0f1; /* خط فاصل خفيف */
+
+.container {
+    max-width: 1300px;
+    margin: auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: var(--box-shadow-light);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--text-dark);
+    border-bottom: 3px solid var(--primary-color);
     padding-bottom: 15px;
-}
-h3 {
-    color: #34495e;
-    margin-top: 30px;
+    font-size: 1.8rem;
+    font-weight: 700;
 }
 
 /* ==================================
-   نموذج التأجير (Form)
-   ================================== */
-form{
-    display:flex;
-    flex-wrap:wrap;
-    gap:15px; /* مسافة جيدة بين الحقول */
-    align-items:center;
-    justify-content:flex-start;
-    margin-bottom: 30px;
-    padding: 20px; 
-    border: 1px solid #dfe6e9; /* حدود ناعمة */
-    border-radius: 10px;
-    background: #f7f9fa; /* خلفية فاتحة للنموذج */
+   نموذج التأجير (Form) - تنظيم الحقول
+   ================================== */
+form {
+    display: flex;
+    flex-direction: column; /* ترتيب العناصر عمودياً */
+    gap: 20px;
+    margin-bottom: 40px;
+    padding: 30px;
+    border: 1px solid #e9ecef;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* 🛑 تثبيت حجم حقول الإدخال والاختيار مع مظهر ناعم */
-form input:not([type="button"]):not(#add-color-input), 
-form select {
-    padding: 10px 12px;
-    width: 180px; /* عرض ثابت لكل حقل */
-    box-sizing: border-box; 
-    flex-grow: 0; 
-    flex-shrink: 0; 
-    border: 1px solid #bdc3c7; /* حدود رمادية ناعمة */
-    border-radius: 8px; /* حواف مستديرة للحقول */
-    font-size: 14px;
-    color: #333;
-    transition: border-color 0.3s;
+/* ** نمط Grid لصفوف الحقول داخل النموذج ** */
+.form-section {
+    display: grid;
+    /* تقسيم الصفحة إلى أعمدة متساوية، بحد أدنى 200px للحقل */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px; /* مسافة بين العناصر داخل القسم */
+    padding: 15px;
+    border-bottom: 1px dashed #ced4da; /* خط فاصل بين الأقسام */
 }
-form input:focus, form select:focus {
-    border-color: #3498db; /* تظهير الحقل النشط */
+
+.form-section:last-of-type {
+    border-bottom: none; /* إزالة الخط الفاصل من القسم الأخير */
+    margin-bottom: 0;
+}
+
+/* تنسيق حقول الإدخال والاختيار (Inputs & Selects) */
+form input:not([type="button"]),
+form select {
+    padding: 12px 15px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    font-size: 15px;
+    color: var(--text-dark);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+form input:focus,
+form select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     outline: none;
 }
 
-/* ==================================
-   الأزرار (Buttons)
-   ================================== */
 /* زر تأكيد التأجير */
 form button {
-    padding: 10px 20px;
-    background: #1abc9c; /* أخضر سماوي مريح */
+    padding: 15px 30px;
+    background: var(--success-color);
     color: #fff;
     border: none;
     cursor: pointer;
-    border-radius: 8px;
-    height: 42px; /* مطابقة ارتفاع الحقول */
+    border-radius: 10px;
     font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 10px;
     transition: background 0.3s, transform 0.1s;
 }
-form button:hover{
-    background: #16a085;
-    transform: translateY(-1px); /* تأثير خفيف عند التمرير */
-}
 
-/* أزرار المخزون والإدارة */
-.stock-buttons{
-    margin:15px 0;
-    text-align:center;
-    border-top: 1px solid #ecf0f1; 
-    padding-top: 25px;
-}
-.stock-buttons button{
-    width:auto;
-    margin:5px 4px;
-    padding:10px 18px;
-    background:#3498db; /* أزرق هادئ */
-    color:#fff;
-    border:none;
-    cursor:pointer;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: background 0.3s;
-}
-.stock-buttons button:hover{background:#2980b9;}
-/* زر إدارة الألوان */
-.stock-buttons button[style*="8e44ad"] {
-    padding: 12px 30px;
-    font-weight: bold;
-    background: #9b59b6 !important; /* بنفسجي ودّي */
-    box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
-}
-.stock-buttons button[style*="8e44ad"]:hover {
-    background: #8e44ad !important;
+form button:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
 }
 
 /* ==================================
-   الجدول (Table)
-   ================================== */
-table{
-    width:100%;
-    border-collapse:separate; /* لفصل الحدود وإعطاء مظهر أنظف */
-    border-spacing: 0 5px; /* مسافة بين الصفوف */
-    margin-top:20px;
-}
-th,td{
-    border:none; /* إزالة الحدود الداخلية */
-    padding:10px;
-    text-align:center;
-    font-size:13px; 
-    white-space: nowrap;
-}
-th{
-    background-color: #ecf0f1; /* خلفية رؤوس الأعمدة */
-    color: #555;
-    font-weight: bold;
-    border-bottom: 2px solid #dfe6e9;
-}
-tr {
-    background: #ffffff;
-    border-radius: 8px; /* حواف مستديرة للصفوف */
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* ظل خفيف لكل صف */
+   روابط التنقل الرئيسية (Main Links)
+   ================================== */
+.main-links {
+    text-align: center;
+    margin-top: 50px;
+    padding: 40px;
+    border: 1px solid #e9ecef;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
-/* تنسيق حالات القطع */
-.available{background:#e8ffe8}
-.unavailable{background:#fbe6e6}
-.returned{background:#f0f3f5 !important; color: #7f8c8d;} /* رمادي فاتح للمرتجع */
+.main-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 20px;
+    padding: 18px 35px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    min-width: 250px;
+}
 
-/* أزرار الإرجاع والحذف داخل الجدول */
-td button {
-    padding: 6px 10px;
-    font-size: 12px;
-    border-radius: 4px;
-    transition: background 0.3s;
+.main-links a:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
-td button[onclick*="returnRental"] {
-    background: #f39c12; /* برتقالي للإرجاع */
+
+.main-links a:nth-child(1) {
+    background: var(--primary-color);
 }
-td button[onclick*="returnRental"]:hover {
-    background: #e67e22;
-}
-td button[onclick*="deleteRental"] {
-    background: #e74c3c; /* أحمر للحذف */
-}
-td button[onclick*="deleteRental"]:hover {
-    background: #c0392b;
+
+.main-links a:nth-child(2) {
+    background: var(--danger-color);
 }
 </style>
 </head>
@@ -179,75 +161,45 @@ td button[onclick*="deleteRental"]:hover {
 
 <div class="container">
 
-<h2>نظام إدارة تأجير الأزياء - COSTUME17</h2>
+<h2>LOCATION COSTUME - لوحة التحكم الرئيسية</h2>
 
 <form>
-<input id="fname" placeholder=" الاسم واللقب">
-<input id="phone" placeholder="رقم الهاتف">
-<input type="date" id="rentDate" title="تاريخ التأجير">
-<input type="date" id="returnDate" title="تاريخ الإرجاع المتوقع">
+    <div class="form-section">
+        <input id="fname" placeholder=" الاسم واللقب">
+        <input id="phone" placeholder="رقم الهاتف">
+        <input type="date" id="rentDate" title="تاريخ التأجير">
+        <input type="date" id="returnDate" title="تاريخ الإرجاع المتوقع">
+    </div>
 
-<select id="color" onchange="refreshSelects(true)">
-    <option value="">--اختيار اللون--</option>
-</select>
+    <div class="form-section">
+        <select id="color" onchange="refreshSelects(true)">
+            <option value="">--اختيار اللون--</option>
+        </select>
+        <select id="pant" onchange="refreshSelects(false)" title="السروال"></select>
+        <select id="gilet" title="الجيلي"></select>
+        <select id="vest" title="الفاست"></select>
+    </div>
 
-<select id="pant" onchange="refreshSelects(false)"></select>
-<select id="gilet"></select> 
-<select id="vest"></select> 
+    <div class="form-section">
+        <select id="shirt" title="القميص"></select>
+        <select id="belt" title="الحزام"></select>
+        <select id="shoe" title="الحذاء"></select>
+        <select id="tie" title="ربطة العنق"></select>
+        <select id="bow" title="الفراشة"></select>
+        <select id="broche" title="البروش"></select>
+    </div>
 
-<select id="shirt"></select>
-<select id="belt"></select>
-<select id="shoe"></select>
-<select id="tie"></select>
-<select id="bow"></select>
-<select id="broche"></select>
-
-<button type="button" onclick="addRental()">تأكيد التأجير</button>
+    <button type="button" onclick="addRental()">تأكيد التأجير</button>
 </form>
 
-
-<div class="stock-buttons">
-    <button onclick="window.location.href='color_admin.html'" style="background:#8e44ad;">إدارة الألوان الرئيسية 🎨</button>
-    
-    <button onclick="window.location.href='pants.html'">السراويل</button>
-    <button onclick="window.location.href='gilets.html'">الجيلي</button>
-    <button onclick="window.location.href='vests.html'">الفاست</button>
-    <button onclick="window.location.href='shirts.html'">القمصان</button>
-    <button onclick="window.location.href='belts.html'">الأحزمة</button>
-    <button onclick="window.location.href='shoes.html'">الأحذية</button>
-    <button onclick="window.location.href='ties.html'">ربطات العنق</button>
-    <button onclick="window.location.href='bows.html'">الفراشات</button>
-    <button onclick="window.location.href='broches.html'">البروش</button>
+<div class="main-links">
+    <a href="inventory_management.html">إدارة المخزون ⚙️</a>
+    <a href="rentals_list.html">قائمة المؤجرات الحالية 📋</a>
 </div>
-
-<h3>قائمة المؤجرات الحالية</h3>
-<table>
-<thead>
-<tr>
-<th>الاسم واللقب</th>
-<th>الهاتف</th>
-<th>اللون</th>
-<th>السروال</th>
-<th>الجيلي</th>
-<th>الفاست</th>
-<th>القميص</th>
-<th>الحزام</th>
-<th>الحذاء</th>
-<th>الربطة</th>
-<th>الفراشة</th>
-<th>البروش</th>
-<th>تاريخ الإرجاع</th>
-<th>إرجاع</th>
-<th>حذف</th>
-</tr>
-</thead>
-<tbody id="rentalsBody"></tbody>
-</table>
 
 </div>
 
-<script src="script.js"></script> 
+<script src="script.js"></script>
 
 </body>
 </html>
-
